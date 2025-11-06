@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from "@nestjs/common";
+import * as nodemailer from "nodemailer";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class MailService {
@@ -8,23 +8,25 @@ export class MailService {
 
   constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
-      host: this.configService.get('MAIL_HOST'),
-      port: this.configService.get('MAIL_PORT'),
+      host: this.configService.get("MAIL_HOST"),
+      port: this.configService.get("MAIL_PORT"),
       secure: false,
       auth: {
-        user: this.configService.get('MAIL_USER'),
-        pass: this.configService.get('MAIL_PASSWORD'),
+        user: this.configService.get("MAIL_USER"),
+        pass: this.configService.get("MAIL_PASSWORD"),
       },
     });
   }
 
   async sendEmailConfirmation(email: string, token: string): Promise<void> {
-    const confirmationUrl = `${this.configService.get('APP_URL')}/auth/confirm-email?token=${token}`;
-    
+    const confirmationUrl = `${this.configService.get(
+      "APP_URL"
+    )}/auth/confirm-email?token=${token}`;
+
     await this.transporter.sendMail({
-      from: this.configService.get('MAIL_FROM'),
+      from: this.configService.get("MAIL_FROM"),
       to: email,
-      subject: 'Confirm Your Email',
+      subject: "Confirm Your Email",
       html: `
         <h1>Email Confirmation</h1>
         <p>Please click the link below to confirm your email:</p>
@@ -34,17 +36,48 @@ export class MailService {
   }
 
   async sendPasswordReset(email: string, token: string): Promise<void> {
-    const resetUrl = `${this.configService.get('APP_URL')}/auth/reset-password?token=${token}`;
-    
+    const resetUrl = `${this.configService.get(
+      "APP_URL"
+    )}/auth/reset-password?token=${token}`;
+
     await this.transporter.sendMail({
-      from: this.configService.get('MAIL_FROM'),
+      from: this.configService.get("MAIL_FROM"),
       to: email,
-      subject: 'Reset Your Password',
+      subject: "Reset Your Password",
       html: `
         <h1>Password Reset</h1>
         <p>Please click the link below to reset your password:</p>
         <a href="${resetUrl}">Reset Password</a>
         <p>This link will expire in 1 hour.</p>
+      `,
+    });
+  }
+
+  async sendOtp(email: string, otp: string, type: string): Promise<void> {
+    const subject =
+      type === "email-verification"
+        ? "Verify Your Email"
+        : type === "password-reset"
+        ? "Reset Your Password"
+        : "Your OTP Code";
+
+    const message =
+      type === "email-verification"
+        ? "Please use the following OTP to verify your email:"
+        : type === "password-reset"
+        ? "Please use the following OTP to reset your password:"
+        : "Your OTP code is:";
+
+    await this.transporter.sendMail({
+      from: this.configService.get("MAIL_FROM"),
+      to: email,
+      subject: subject,
+      html: `
+        <h1>${subject}</h1>
+        <p>${message}</p>
+        <h2 style="color: #4CAF50; font-size: 32px; letter-spacing: 5px;">${otp}</h2>
+        <p>This OTP will expire in 10 minutes.</p>
+        <p>If you did not request this, please ignore this email.</p>
       `,
     });
   }

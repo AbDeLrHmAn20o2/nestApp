@@ -1,8 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
-@Entity('users')
+@Entity("users")
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({ unique: true })
@@ -32,8 +38,11 @@ export class User {
   @Column({ nullable: true })
   googleId: string;
 
-  @Column({ default: 'local' })
+  @Column({ default: "local" })
   provider: string;
+
+  @Column("simple-array", { default: "user" })
+  roles: string[];
 
   @CreateDateColumn()
   createdAt: Date;
