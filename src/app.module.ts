@@ -16,6 +16,12 @@ import { S3Module } from "./s3/s3.module";
 import { BrandModule } from "./brand/brand.module";
 import { CategoryModule } from "./category/category.module";
 import { ProductModule } from "./product/product.module";
+import { CartModule } from "./cart/cart.module";
+import { WishlistModule } from "./wishlist/wishlist.module";
+import { CouponModule } from "./coupon/coupon.module";
+import { OrderModule } from "./order/order.module";
+import { PaymentModule } from "./payment/payment.module";
+import { SocketModule } from "./socket/socket.module";
 
 @Module({
   imports: [
@@ -49,6 +55,12 @@ import { ProductModule } from "./product/product.module";
     BrandModule,
     CategoryModule,
     ProductModule,
+    CartModule,
+    WishlistModule,
+    CouponModule,
+    OrderModule,
+    PaymentModule,
+    SocketModule,
   ],
 })
 export class AppModule implements NestModule {
